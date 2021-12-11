@@ -1,0 +1,3 @@
+import pygame
+
+#display window
