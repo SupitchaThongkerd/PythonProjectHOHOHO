@@ -86,9 +86,9 @@ class OptionsMenu(Menu):
             self.game.check_events()
             self.check_input()
             self.game.display.fill((104, 159, 90))
-            self.game.draw_text('Options', 30, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
-            self.game.draw_text("Volume", 30, self.volx, self.voly)
-            self.game.draw_text("Controls", 30, self.controlsx, self.controlsy)
+            self.game.draw_text('Options', 25, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 30)
+            self.game.draw_text("Volume", 20, self.volx, self.voly)
+            self.game.draw_text("Controls", 20, self.controlsx, self.controlsy)
             self.draw_cursor()
             self.blit_screen()
 
@@ -119,6 +119,6 @@ class CreditsMenu(Menu):
                 self.game.curr_menu = self.game.main_menu
                 self.run_display = False
             self.game.display.fill(self.game.BLACK)
-            self.game.draw_text('Credits', 50, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
-            self.game.draw_text('diew ma sia credits', 30, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
+            self.game.draw_text('Credits', 25, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 - 20)
+            self.game.draw_text('diew ma sia credits', 20, self.game.DISPLAY_W / 2, self.game.DISPLAY_H / 2 + 10)
             self.blit_screen()
