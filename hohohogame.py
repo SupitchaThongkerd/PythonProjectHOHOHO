@@ -18,8 +18,9 @@ pygame.display.set_caption("HOHOHO GIVE MY SLEIGH BACK!")
 pygame.init()
 pygame.mixer.init()
 pygame.mixer.music.load("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO/pureimagination.wav")
-pygame.mixer.music.play(-1)
+pygame.mixer.music.play(1)
 pygame.event.wait()
+
 
 #current_disc = os.getcwd()
 #game_folder = os.path.dirname(current_disc)
@@ -146,12 +147,17 @@ class Player(Characters):
                         objects.remove(object)
                         if magic in self.magics:
                             self.magics.remove(magic)
+    
+    def refresh_health(self):
+        self.health = self.max_health
+
 
     def draw(self, window):
         super().draw(window)
         self.healthbar(window)
 
     def healthbar(self, window):
+        
         pygame.draw.rect(window, (166, 8, 95), (self.x, self.y + self.characters_img.get_height() + 10, self.characters_img.get_width(), 10))
         #self.max_health(health rn)- self.health(full health))/self.max_health got the percent health loss
         pygame.draw.rect(window, (35, 96, 95), (self.x, self.y + self.characters_img.get_height() + 10, self.characters_img.get_width() * (self.health /self.max_health), 10))
@@ -186,6 +192,7 @@ def collide(object1, object2):
 
 
 def main():
+    rounds = 3
     run = True
     FPS = 60
     level1 = 0
@@ -193,6 +200,9 @@ def main():
 
     main_font = pygame.font.Font("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO/FFF_Tusj.ttf", 40)
     lost_font = pygame.font.Font("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO/Quinquefive.ttf", 21)
+    end_font = pygame.font.Font("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO/Quinquefive.ttf", 21)
+
+    pewpew = pygame.mixer.Sound("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO/Fairy dust, magic sound effect.wav")
 
     enemies = []
     #wavelemgth =5  = 10 enemies if 6 then +1
@@ -207,7 +217,9 @@ def main():
     clock = pygame.time.Clock()
 
     lost = False
+    end = False
     lost_count = 0
+    end_count = 0
 
 
     def redraw_window():
@@ -225,6 +237,10 @@ def main():
         player.draw(win)
 
 
+        if end:
+            end_label = end_font.render("YOU SAVE SANTA'S SLEIGH!!", 1, (79, 118, 12))
+            win.blit(end_label, (WIDTH/2 - end_label.get_width()/2, 325))
+        
         if lost:
             lost_label = lost_font.render("YOU FAILED TO SAVE SANTA'S SLEIGH:(", 1, (255, 0, 0))
             win.blit(lost_label, (WIDTH/2 - lost_label.get_width()/2, 325))
@@ -241,8 +257,12 @@ def main():
             lost = True
             lost_count += 1
 
+        if rounds == 0:
+            end = True
+            end_count += 1
+
         #for healthbar in Player < health:
-           # level1 = +1
+        # level1 = +1
             #health = 100
         
         if lost:
@@ -250,21 +270,30 @@ def main():
                 run = False
             else:
                 continue
+        
+        if end:
+            if end_count > FPS * 5:
+                run = False
+            else:
+                continue
 
         if len(enemies) == 0:
             level1 += 1
+            rounds -= 1
             wave_length += 5
+            player.refresh_health()
+            #self.health = self.max_health
             # create many enemies
             for i in range(wave_length):
                 #random position
                 enemy = Enemy(random.randrange(1050, 2500), random.randrange(50, WIDTH - 450), random.choice(["red", "green", "blue"]))
                 enemies.append(enemy)
 
-        
-
 
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
+                pygame.display.quit()
+                pygame.quit()
                 run = False
         
         #making keys to move object (WASD)
@@ -284,6 +313,7 @@ def main():
         #enter space to shoot
         if keys[pygame.K_SPACE]:
             player.shoot()
+            pewpew.play()
 
         for enemy in enemies[:]:
             #make the enemies move
