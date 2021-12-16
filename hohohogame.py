@@ -18,6 +18,7 @@ pygame.display.set_caption("HOHOHO GIVE MY SLEIGH BACK!")
 pygame.init()
 pygame.mixer.init()
 pygame.mixer.music.load("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO/pureimagination.wav")
+pygame.mixer.music.set_volume(0.1)
 pygame.mixer.music.play(1)
 pygame.event.wait()
 
@@ -314,6 +315,7 @@ def main():
         if keys[pygame.K_SPACE]:
             player.shoot()
             pewpew.play()
+            pewpew.set_volume(0.2)
 
         for enemy in enemies[:]:
             #make the enemies move
