@@ -6,12 +6,20 @@ import random
 from pygame import draw
 from pygame.constants import WINDOWHITTEST
 from pygame.sprite import collide_circle
+from pygame import mixer
 pygame.font.init()
 os.chdir("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO")
 
 WIDTH, HEIGHT = 1000, 650
 win = pygame.display.set_mode((WIDTH, HEIGHT))
 pygame.display.set_caption("HOHOHO GIVE MY SLEIGH BACK!")
+
+#bgmusic
+pygame.init()
+pygame.mixer.init()
+pygame.mixer.music.load("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO/pureimagination.wav")
+pygame.mixer.music.play(-1)
+pygame.event.wait()
 
 #current_disc = os.getcwd()
 #game_folder = os.path.dirname(current_disc)
@@ -147,7 +155,8 @@ class Player(Characters):
         pygame.draw.rect(window, (166, 8, 95), (self.x, self.y + self.characters_img.get_height() + 10, self.characters_img.get_width(), 10))
         #self.max_health(health rn)- self.health(full health))/self.max_health got the percent health loss
         pygame.draw.rect(window, (35, 96, 95), (self.x, self.y + self.characters_img.get_height() + 10, self.characters_img.get_width() * (self.health /self.max_health), 10))
-    
+        
+        
     
 class Enemy(Characters):
     COLOR_MAP = {
@@ -187,7 +196,7 @@ def main():
 
     enemies = []
     #wavelemgth =5  = 10 enemies if 6 then +1
-    wave_length = 3
+    wave_length = 5
     enemies_velocity = 2
 
     player_velocity = 6 #lower clock speed = nedd higher velocity
@@ -231,6 +240,10 @@ def main():
         if lives <= 0 or player.health <= 0:
             lost = True
             lost_count += 1
+
+        #for healthbar in Player < health:
+           # level1 = +1
+            #health = 100
         
         if lost:
             if lost_count > FPS * 5:
@@ -246,7 +259,10 @@ def main():
                 #random position
                 enemy = Enemy(random.randrange(1050, 2500), random.randrange(50, WIDTH - 450), random.choice(["red", "green", "blue"]))
                 enemies.append(enemy)
- 
+
+        
+
+
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 run = False
@@ -275,7 +291,7 @@ def main():
             enemy.move_magics(-magic_velocity, player)
 
             #every 2sec enemy will shoot
-            if random.randrange(0, 2*60) == 1:
+            if random.randrange(0, 3*60) == 1:
                 enemy.shoot()
 
             #player health decrease after the collision
@@ -287,7 +303,7 @@ def main():
                 lives -= 1
                 enemies.remove(enemy)
 
-
+        
         #check if the magic collide with any of the enemies
         player.move_magics(magic_velocity, enemies)
 
