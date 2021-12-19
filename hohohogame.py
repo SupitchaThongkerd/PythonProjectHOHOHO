@@ -210,7 +210,7 @@ def main():
     wave_length = 5
     enemies_velocity = 2
 
-    player_velocity = 6 #lower clock speed = nedd higher velocity
+    player_velocity = 6 #lower clock speed = need higher velocity
     magic_velocity = 4
 
     player = Player(10, 300)
