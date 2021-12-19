@@ -54,10 +54,18 @@ fire2 = pygame.transform.scale(fire, (30, 30))
 lotus = pygame.image.load(os.path.join("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO", "lotus.png"))
 lotus2 = pygame.transform.scale(lotus, (30, 30))
 
+#lives
+present = pygame.image.load(os.path.join("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO", "xmaspresent.png"))
+present2 = pygame.transform.scale(present, (30, 30))
+#health 
+bell = pygame.image.load(os.path.join("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO", "xmasbells.png"))
+bell2 = pygame.transform.scale(bell, (40, 40))
+
 #background
 BG = pygame.transform.scale(pygame.image.load(os.path.join("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO", "pjbg.png")), (WIDTH, HEIGHT))
 BG2 = pygame.transform.scale(pygame.image.load(os.path.join("/Users/pearsupitcha/Documents/python project/PythonProjectHOHOHO", "cmbg.jpg")), (WIDTH, HEIGHT))
 
+    
 class Magic:
     def __init__(self, x, y, img):
         self.x = x
@@ -76,6 +84,25 @@ class Magic:
     
     def collision(self, object):
         return collide(self, object)
+        
+#lass Potion:
+    #def __init__(self, x, y, img):
+       # self.x = x
+        #self.y = y
+       # self.img = img
+       # self.mask = pygame.mask.from_surface(self.img)
+    
+    #def draw(self, window):
+        #window.blit(self.img, (self.x, self.y))
+    
+    #def move(self, velocity):
+       # self.x += velocity
+
+    #def off_screen(self, WIDTH):
+    #    return not(self.x <= WIDTH and self.x >= 0)
+    
+    # def collision(self, object):
+    #     return collide(self, object)
 
 class Characters:
     #FPS is 60
@@ -87,13 +114,20 @@ class Characters:
         self.health = health
         self.characters_img = None
         self.magic_img = None
+        self.potion_img = None
         self.magics = []
+        self.potions = []
         self.cool_down_counter = 0
 
     def draw(self, window):
         window.blit(self.characters_img, (self.x, self.y))
         for magic in self.magics:
             magic.draw(window)
+    
+    # def draw(self, window):
+    #     window.blit(self.characters_img, (self.x, self.y))
+    #     for potion in self.potions:
+    #         potion.draw(window)
     
     #move laser and check collision
     def move_magics(self, velocity, object):
@@ -105,6 +139,18 @@ class Characters:
             elif magic.collision(object):
                 object.health -= 10
                 self.magics.remove(magic)
+
+
+    # def move_potions(self, velocity, object):
+    #     self.cooldown()
+    #     for potion in self.potions:
+    #         potion.move(velocity)
+    #         if potion.off_screen(WIDTH):
+    #             self.potions.remove(potion)
+    #         elif potion.collision(object):
+    #             object.health += 10
+    #             self.potions.remove(potion)
+        
 
     def cooldown(self):
         if self.cool_down_counter >= self.COOLDOWN:
@@ -163,13 +209,13 @@ class Player(Characters):
         #self.max_health(health rn)- self.health(full health))/self.max_health got the percent health loss
         pygame.draw.rect(window, (35, 96, 95), (self.x, self.y + self.characters_img.get_height() + 10, self.characters_img.get_width() * (self.health /self.max_health), 10))
         
-        
+
     
 class Enemy(Characters):
     COLOR_MAP = {
                 "red": (grinch2, tomato2),
                 "green": (pumpkin2, fire2),
-                "blue": (bhudda2, lotus2)}
+                }
 
     def __init__(self, x, y, color, health = 100):
         super().__init__(x, y, health)
@@ -183,6 +229,48 @@ class Enemy(Characters):
             if self.cool_down_counter == 0:
                 magic = Magic(self.x, self.y - 10, self.magic_img)
                 self.magics.append(magic)
+                #set cool down counter to count up
+                self.cool_down_counter = 1
+    
+class Blue(Characters):
+    COLOR_MAP = {
+                
+                "blue": (bhudda2, lotus2)}
+
+    def __init__(self, x, y, color, health = 100):
+        super().__init__(x, y, health)
+        self.characters_img, self.magic_img = self.COLOR_MAP[color]
+        self.mask = pygame.mask.from_surface(self.characters_img)
+
+    def move(self, velocity):
+        self.x -= velocity
+
+        def shoot(self):
+            if self.cool_down_counter == 0:
+                potion = Magic(self.x, self.y - 10, self.magic_img)
+                self.magics.append(Magic)
+                #set cool down counter to count up
+                self.cool_down_counter = 1
+    
+
+
+class Bell(Characters):
+    COLOR_MAP = {
+                
+                "bell": (bell2, present2)}
+
+    def __init__(self, x, y, color, health = 100):
+        super().__init__(x, y, health)
+        self.characters_img, self.magic_img = self.COLOR_MAP[color]
+        self.mask = pygame.mask.from_surface(self.characters_img)
+
+    def move(self, velocity):
+        self.x -= velocity
+
+        def shoot(self):
+            if self.cool_down_counter == 0:
+                potion = Magic(self.x, self.y - 10, self.magic_img)
+                self.magicss.append(Magic)
                 #set cool down counter to count up
                 self.cool_down_counter = 1
 
@@ -210,8 +298,17 @@ def main():
     wave_length = 5
     enemies_velocity = 2
 
+    blues = []
+    blue_wl = 3
+    blue_vel = 1
+
+    bells = []
+    bell_wl = 4
+    bell_vel = 2
+
     player_velocity = 6 #lower clock speed = need higher velocity
     magic_velocity = 4
+    #potion_vel = 2
 
     player = Player(10, 300)
 
@@ -234,6 +331,12 @@ def main():
         
         for enemy in enemies:
             enemy.draw(win)
+        
+        for blue in blues:
+            blue.draw(win)
+
+        for bell in bells:
+            bell.draw(win)
 
         player.draw(win)
 
@@ -285,10 +388,21 @@ def main():
             player.refresh_health()
             #self.health = self.max_health
             # create many enemies
+
             for i in range(wave_length):
-                #random position
-                enemy = Enemy(random.randrange(1050, 2500), random.randrange(50, WIDTH - 450), random.choice(["red", "green", "blue"]))
+                enemy = Enemy(random.randrange(1050, 2500), random.randrange(50, WIDTH - 450), random.choice(["red", "green"]))
                 enemies.append(enemy)
+
+            for i in range(blue_wl):
+                #random position
+                blue = Blue(random.randrange(1050, 2500), random.randrange(50, WIDTH - 450), random.choice(["blue"]))
+                blues.append(blue)
+            
+            for i in range(bell_wl):
+                #random position
+                bell = Bell(random.randrange(1050, 2500), random.randrange(50, WIDTH - 450), random.choice(["bell"]))
+                bells.append(bell)
+
 
 
         for event in pygame.event.get():
@@ -303,7 +417,7 @@ def main():
         if keys[pygame.K_a] and player.x - player_velocity > 0:
             player.x -= player_velocity
         #moving right and not off the screen width
-        if keys[pygame.K_d] and player.x + player_velocity + (player.get_width()+650) < WIDTH:
+        if keys[pygame.K_d] and player.x + player_velocity + (player.get_width()) < WIDTH:
             player.x += player_velocity
         #moving up and not off the screen which is more than zero
         if keys[pygame.K_w] and player.y - player_velocity > 0:
@@ -321,6 +435,7 @@ def main():
             #make the enemies move
             enemy.move(enemies_velocity)
             enemy.move_magics(-magic_velocity, player)
+        
 
             #every 2sec enemy will shoot
             if random.randrange(0, 3*60) == 1:
@@ -334,6 +449,35 @@ def main():
             elif enemy.x + enemy.get_width() < WIDTH-951:
                 lives -= 1
                 enemies.remove(enemy)
+            
+        for blue in blues[:]:
+            #make the enemies move
+            blue.move(blue_vel)
+            #blue.move_magics(-magic_velocity, player)
+    
+            #every 2sec enemy will shoot
+            # if random.randrange(0, 3*60) == 1:
+            #     blue.shoot()
+
+            #player health decrease after the collision
+            if collide(blue, player):
+                lives += 1
+                blues.remove(blue)
+            #deducting lives if the enemy off the screen
+            elif blue.x + blue.get_width() < WIDTH-951:
+                blues.remove(blue)
+        
+        for bell in bells[:]:
+            #make the enemies move
+            bell.move(bell_vel)
+          
+            #player health decrease after the collision
+            if collide(bell, player):
+                player.health += 5
+                bells.remove(bell)
+            #deducting lives if the enemy off the screen
+            elif bell.x + bell.get_width() < WIDTH-951:
+                bells.remove(bell)
 
         
         #check if the magic collide with any of the enemies
